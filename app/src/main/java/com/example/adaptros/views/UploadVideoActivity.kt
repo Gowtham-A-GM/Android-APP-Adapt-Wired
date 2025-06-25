@@ -12,6 +12,7 @@ import com.example.adaptros.databinding.ActivityUploadVideoBinding
 import com.example.adaptros.model.VideoModel
 import com.example.adaptros.viewModel.VideoViewModel
 import android.widget.Toast
+import androidx.activity.enableEdgeToEdge
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.adaptros.viewModel.VideoAdapter
 import com.example.adaptros.R
@@ -30,6 +31,7 @@ class UploadVideoActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
 
         binding = ActivityUploadVideoBinding.inflate(layoutInflater)
         setContentView(binding.root)

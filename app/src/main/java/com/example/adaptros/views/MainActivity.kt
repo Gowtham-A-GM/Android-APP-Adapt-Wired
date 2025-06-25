@@ -26,6 +26,10 @@ class MainActivity : AppCompatActivity() {
     private var tapCount = 0
     private var lastTapTime = 0L
 
+    // for secret btn
+    private var showState = 0
+    private var hideState = 0
+
     // for displaying corresponding video from dictionary
     private val videoMap = hashMapOf(
         1 to R.raw.bg_video_speaking
@@ -43,7 +47,7 @@ class MainActivity : AppCompatActivity() {
         // locking the screen, only possible to get out on tapping 10 times
 //        lockSystemUI()
         setupSecretExitTap()
-
+        setupSecretBtn()
         playBGVideo(-1)   // playing background video (in LOOP)
         rosInit()
         uploadVideoBtnInit()
@@ -72,7 +76,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupSecretExitTap() {
-        val tapZone = findViewById<View>(R.id.v_exitTapZone)
+        val tapZone = findViewById<View>(R.id.v_secretTopLeft)
         tapZone.setOnClickListener {
             val currentTime = System.currentTimeMillis()
             if (currentTime - lastTapTime < 800) {
@@ -87,6 +91,49 @@ class MainActivity : AppCompatActivity() {
                 stopLockTask()
                 finish() // Optional: or navigate to another screen
                 Toast.makeText(this, "Exiting lock mode", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun setupSecretBtn() {
+
+        binding.vSecretBottomRight.setOnClickListener {
+            // Show Pattern
+            if (showState in 0..2) {
+                showState++
+            } else {
+                showState = 0
+            }
+
+            // Hide Pattern
+            if (hideState in 0..1) {
+                hideState++
+            } else {
+                hideState = 0
+            }
+        }
+
+        binding.vSecretBottomLeft.setOnClickListener {
+            // Show Pattern
+            if (showState in 3..5) {
+                showState++
+                if (showState == 6) {
+                    binding.btnUploadVideo.visibility = View.VISIBLE
+                    showState = 0
+                }
+            } else {
+                showState = 0
+            }
+
+            // Hide Pattern
+            if (hideState in 2..3) {
+                hideState++
+                if (hideState == 4) {
+                    binding.btnUploadVideo.visibility = View.GONE
+                    hideState = 0
+                }
+            } else {
+                hideState = 0
             }
         }
     }
