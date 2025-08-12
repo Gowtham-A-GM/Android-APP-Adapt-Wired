@@ -1,4 +1,4 @@
-package com.example.adaptros.model
+package com.example.adapt_rosintegrated.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -8,5 +8,6 @@ data class VideoModel(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val videoKey: Int,
     val placeName: String,
-    val filePath: String
+    val filePath: String,
+    val description: String
 )

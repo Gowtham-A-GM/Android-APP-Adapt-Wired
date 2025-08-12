@@ -1,6 +1,5 @@
-package com.example.adaptros.viewModel
+package com.example.adapt_rosintegrated.viewModel
 
-import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,8 +7,8 @@ import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.VideoView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.adaptros.R
-import com.example.adaptros.model.VideoModel
+import com.example.adapt_rosintegrated.R
+import com.example.adapt_rosintegrated.model.VideoModel
 
 class VideoAdapter(
     private val onDeleteClicked: (Int) -> Unit,

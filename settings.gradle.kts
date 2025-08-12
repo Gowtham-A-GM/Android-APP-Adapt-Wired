@@ -19,6 +19,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Adapt Ros"
+rootProject.name = "Adapt Ros Integrated"
 include(":app")
  

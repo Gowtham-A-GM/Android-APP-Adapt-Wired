@@ -1,9 +1,8 @@
-package com.example.adaptros.db
+package com.example.adapt_rosintegrated.model
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
-import com.example.adaptros.model.VideoModel
 
 @Dao
 interface VideoDao {
@@ -11,9 +10,8 @@ interface VideoDao {
     @Insert
     suspend fun insert(video: VideoModel)
 
-    @Query("UPDATE videos SET videoKey = :videoKey, placeName = :placeName, filePath = :filePath WHERE id = :id")
-    suspend fun updateVideo(id: Int, videoKey: Int, placeName: String, filePath: String)
-
+    @Query("UPDATE videos SET videoKey = :videoKey, placeName = :placeName, filePath = :filePath, description = :description WHERE id = :id")
+    suspend fun updateVideo(id: Int, videoKey: Int, placeName: String, filePath: String, description: String)
 
     @Query("SELECT * FROM videos")
     suspend fun getAllVideos(): List<VideoModel>

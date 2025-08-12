@@ -1,12 +1,12 @@
-package com.example.adaptros.viewModel
+package com.example.adapt_rosintegrated.viewModel
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.example.adaptros.model.AdaptRosDB
-import com.example.adaptros.model.VideoModel
+import com.example.adapt_rosintegrated.model.AdaptRosDB
+import com.example.adapt_rosintegrated.model.VideoModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -37,7 +37,7 @@ class VideoViewModel(application: Application) : AndroidViewModel(application) {
 
     fun updateVideo(video: VideoModel) {
         viewModelScope.launch(Dispatchers.IO) {
-            dao.updateVideo(video.id, video.videoKey, video.placeName, video.filePath)
+            dao.updateVideo(video.id, video.videoKey, video.placeName, video.filePath, video.description)
             loadAllVideos()
         }
     }

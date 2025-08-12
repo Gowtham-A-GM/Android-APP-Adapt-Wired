@@ -1,4 +1,4 @@
-package com.example.adaptros
+package com.example.adapt_rosintegrated
 
 import org.junit.Test
 
