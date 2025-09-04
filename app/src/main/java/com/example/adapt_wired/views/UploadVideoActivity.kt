@@ -1,4 +1,4 @@
-package com.example.adapt_rosintegrated.views
+package com.example.adapt_wired.views
 
 import android.app.Activity
 import android.content.Intent
@@ -8,14 +8,14 @@ import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
-import com.example.adapt_rosintegrated.databinding.ActivityUploadVideoBinding
-import com.example.adapt_rosintegrated.model.VideoModel
-import com.example.adapt_rosintegrated.viewModel.VideoViewModel
+import com.example.adapt_wired.databinding.ActivityUploadVideoBinding
+import com.example.adapt_wired.model.VideoModel
+import com.example.adapt_wired.viewModel.VideoViewModel
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.adapt_rosintegrated.viewModel.VideoAdapter
-import com.example.adapt_rosintegrated.R
+import com.example.adapt_wired.viewModel.VideoAdapter
+import com.example.adapt_wired.R
 import java.io.File
 
 class UploadVideoActivity : AppCompatActivity() {

@@ -1,4 +1,4 @@
-package com.example.adapt_rosintegrated.model
+package com.example.adapt_wired.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

@@ -1,4 +1,4 @@
-package com.example.adapt_rosintegrated
+package com.example.adapt_wired
 
 import org.junit.Test
 

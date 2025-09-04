@@ -1,4 +1,4 @@
-package com.example.adapt_rosintegrated
+package com.example.adapt_wired
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

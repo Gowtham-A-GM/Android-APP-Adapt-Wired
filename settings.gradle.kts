@@ -16,9 +16,11 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven(url = "https://jitpack.io")
+
     }
 }
 
-rootProject.name = "Adapt Ros Integrated"
+rootProject.name = "Adapt Wired"
 include(":app")
  

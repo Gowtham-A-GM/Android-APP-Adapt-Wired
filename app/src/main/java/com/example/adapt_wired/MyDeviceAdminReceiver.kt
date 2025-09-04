@@ -1,4 +1,4 @@
-package com.example.adapt_rosintegrated
+package com.example.adapt_wired
 
 import android.app.admin.DeviceAdminReceiver
 import android.content.Context

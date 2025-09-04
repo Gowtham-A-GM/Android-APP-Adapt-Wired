@@ -1,4 +1,4 @@
-package com.example.adapt_rosintegrated.viewModel
+package com.example.adapt_wired.viewModel
 
 import android.view.LayoutInflater
 import android.view.View
@@ -7,8 +7,8 @@ import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.VideoView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.adapt_rosintegrated.R
-import com.example.adapt_rosintegrated.model.VideoModel
+import com.example.adapt_wired.R
+import com.example.adapt_wired.model.VideoModel
 
 class VideoAdapter(
     private val onDeleteClicked: (Int) -> Unit,

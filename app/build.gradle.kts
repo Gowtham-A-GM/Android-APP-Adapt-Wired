@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.adapt_rosintegrated"
+    namespace = "com.example.adapt_wired"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.example.adapt_rosintegrated"
+        applicationId = "com.example.adapt_wired"
         minSdk = 24
         targetSdk = 35
         versionCode = 1
@@ -62,6 +62,6 @@ dependencies {
     // For video inside items
     implementation("com.google.android.exoplayer:exoplayer:2.19.1")
 
-    // For Ros
-    implementation("org.java-websocket:Java-WebSocket:1.5.3")
+    // For Wired
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.9.24")
 }

@@ -1,36 +1,31 @@
-package com.example.adapt_rosintegrated.views
+package com.example.adapt_wired.views
 
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.PowerManager
 import android.speech.tts.TextToSpeech
 import android.util.Log
 import android.view.View
 import android.view.WindowInsets
 import android.view.WindowInsetsController
-import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
-import com.example.adapt_rosintegrated.MyDeviceAdminReceiver
-import com.example.adapt_rosintegrated.R
-import com.example.adapt_rosintegrated.databinding.ActivityMainBinding
-import com.example.adapt_rosintegrated.viewModel.RosSocketManager
-import com.example.adapt_rosintegrated.viewModel.VideoViewModel
+import com.example.adapt_wired.R
+import com.example.adapt_wired.databinding.ActivityMainBinding
+import com.example.adapt_wired.viewModel.VideoViewModel
 import java.util.Locale
 import android.speech.tts.UtteranceProgressListener
-
+import com.example.adapt_wired.viewModel.WiredSocketManager
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var videoViewModel: VideoViewModel
-    private lateinit var rosSocketManager: RosSocketManager  // manager to handle ROS connection and videoKeys
+    private lateinit var wiredSocketManager: WiredSocketManager
 
     private var tapCount = 0
     private var lastTapTime = 0L
@@ -46,7 +41,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var idealVideoUri: Uri
 
 
-    private var rosIp = ""  // Default IP, can change dynamically - 172.16.124.45
+//    private var rosIp = "127.0.0.1"  // Default IP, can change dynamically - 172.16.124.45
     private var lastPlayedKey: Int? = null
     private var connectingToast: Toast? = null
 
@@ -63,17 +58,6 @@ class MainActivity : AppCompatActivity() {
         speakingVideoUri = Uri.parse("android.resource://$packageName/${R.raw.bg_video_speaking}")
         idealVideoUri = Uri.parse("android.resource://$packageName/${R.raw.bg_video_ideal}")
 
-        // Save it
-        getSharedPreferences("app_prefs", MODE_PRIVATE)
-            .edit().putString("ros_ip", rosIp).apply()
-
-        // Load it
-        rosIp = getSharedPreferences("app_prefs", MODE_PRIVATE)
-            .getString("ros_ip", "") ?: ""
-
-
-//        initBatteryOptimization()
-//        initWifiForce()
 
         initTTS()
         lockSystemUI()  // optional: lock system UI for kiosk mode
@@ -81,60 +65,10 @@ class MainActivity : AppCompatActivity() {
         setupSecretExitTap()  // hidden tap area to exit kiosk
         setupSecretBtn()  // hidden pattern to show/hide upload button
         playBGVideo(null)  // play default background video
-        setupRosIpButton()  // initialize ROS connection
-        if (rosIp.isNotBlank()) {
-            connectToRos()
-        }
+        connectToWiredServer()
         uploadVideoBtnInit()  // setup upload button click listener
 
     }
-
-    private fun initBatteryOptimization(){
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            val pm = getSystemService(PowerManager::class.java)
-            if (!pm.isIgnoringBatteryOptimizations(packageName)) {
-                val intent = Intent(android.provider.Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS).apply {
-                    data = Uri.parse("package:$packageName")
-                }
-                startActivity(intent)
-            }
-        }
-
-    }
-
-    private fun initWifiForce(){
-        val wifiManager = applicationContext.getSystemService(WIFI_SERVICE) as android.net.wifi.WifiManager
-        wifiManager.isWifiEnabled = true  // Turn on WiFi (no-op if already on)
-        AlertDialog.Builder(this)
-            .setTitle("Disable Auto Mobile Data Switch")
-            .setMessage("To avoid WiFi disconnection, please disable 'Switch to mobile data automatically' in Developer Options.")
-            .setPositiveButton("Got it", null)
-            .show()
-    }
-
-    private fun setupRosIpButton() {
-        binding.btnSettings.setOnClickListener {
-            val editText = EditText(this)
-            editText.hint = "Enter ROS IP (e.g. 192.168.0.105)"
-            editText.setText(rosIp)  // Pre-fill with current IP
-
-            AlertDialog.Builder(this)
-                .setTitle("Set ROS IP Address")
-                .setView(editText)
-                .setPositiveButton("Connect") { _, _ ->
-                    rosIp = editText.text.toString().trim()
-                    if (rosIp.isNotEmpty()) {
-                        Toast.makeText(this, "Connecting to $rosIp", Toast.LENGTH_SHORT).show()
-                        connectToRos()
-                    } else {
-                        Toast.makeText(this, "Invalid IP", Toast.LENGTH_SHORT).show()
-                    }
-                }
-                .setNegativeButton("Cancel", null)
-                .show()
-        }
-    }
-
 
     private fun initTTS(){
         tts = TextToSpeech(this) { status ->
@@ -186,26 +120,29 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun connectToRos() {
-        if (::rosSocketManager.isInitialized) {
-            rosSocketManager.disconnect()
+    private fun connectToWiredServer() {
+        if (::wiredSocketManager.isInitialized) {
+            wiredSocketManager.disconnect()
         }
-        rosSocketManager = RosSocketManager(
-            rosIp,
+        wiredSocketManager = WiredSocketManager(
+            "127.0.0.1",
+            5000,  // TCP port your Python server listens on
             onVideoKeyReceived = { videoKey ->
-                handleRosVideoKey(videoKey)
+                handleWiredVideoKey(videoKey)   // reuse same function
+                Log.d("Main", "Video key received in MainActivity: $videoKey")
             },
             onConnected = {
                 runOnUiThread {
                     connectingToast?.cancel()
-                    Toast.makeText(this, "Connected to $rosIp", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Connected to TBot", Toast.LENGTH_SHORT).show()
                 }
             }
         )
-        rosSocketManager.initRosConnection()
+        wiredSocketManager.initConnection()
     }
 
-    private fun handleRosVideoKey(videoKey: Int) {
+
+    private fun handleWiredVideoKey(videoKey: Int) {
         if (lastPlayedKey == videoKey) return
         Log.d("Main", "HandleRosVideoKey: $videoKey")
         lastPlayedKey = videoKey
@@ -310,8 +247,6 @@ class MainActivity : AppCompatActivity() {
             if (secretBtnState == 4) {
                 binding.btnUploadVideo.visibility =
                     if (binding.btnUploadVideo.visibility == View.GONE) View.VISIBLE else View.GONE
-                binding.btnSettings.visibility =
-                    if (binding.btnSettings.visibility == View.GONE) View.VISIBLE else View.GONE
                 secretBtnState = 0
             }
         }
@@ -335,22 +270,6 @@ class MainActivity : AppCompatActivity() {
             binding.vvBackgroundVideo.start()
         }
 
-//        binding.vvBackgroundVideo.setOnCompletionListener {
-//            Log.d("VIDEO", "Completed: $videoUri | isSpeaking: $isSpeaking")
-//
-//            if (videoUri == speakingVideoUri && isSpeaking) {
-//                Log.d("VIDEO", "TTS still speaking... replaying speaking video.")
-//                playBGVideo(videoUri.toString())  // replay
-//            } else if (videoUri != idealVideoUri && videoUri != speakingVideoUri) {
-//                Log.d("ROS_PLAY", "Custom video finished. Sending startmove = 01")
-//                rosSocketManager.publishToRosTopic("/start_movement", "01")
-//                playBGVideo(null)
-//            } else {
-//                Log.d("VIDEO", "Video done. Switching to ideal.")
-//                playBGVideo(null)
-//            }
-//        }
-
         binding.vvBackgroundVideo.setOnCompletionListener {
             val uriStr = videoUri.toString()
             val speakingUriStr = speakingVideoUri.toString()
@@ -363,7 +282,7 @@ class MainActivity : AppCompatActivity() {
                 playBGVideo(uriStr)  // replay
             } else if (uriStr != idealUriStr && uriStr != speakingUriStr) {
                 Log.d("ROS_PLAY", "Custom video finished. Sending startmove = 01")
-                rosSocketManager.publishToRosTopic("/start_movement", "01")
+                wiredSocketManager.publishMessage("1")
                 playBGVideo(null)
             } else {
                 Log.d("VIDEO", "Video done. Switching to ideal.")
@@ -398,8 +317,9 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        if (::rosSocketManager.isInitialized) {
-            rosSocketManager.disconnect()
+        if (::wiredSocketManager.isInitialized) {
+            wiredSocketManager.disconnect()
         }
     }
+
 }
